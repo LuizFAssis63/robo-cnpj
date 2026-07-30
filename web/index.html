@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Robô CNPJ — prospecção contábil</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="envelope">
+    <header>
+      <div>
+        <h1>Robô CNPJ — prospecção contábil</h1>
+        <p class="subtitulo">
+          Empresas fora do Simples e do MEI, com apontamentos de fontes públicas.
+        </p>
+      </div>
+      <button class="tema" id="botao-tema" type="button">Alternar tema</button>
+    </header>
+
+    <section class="cartao hero" aria-labelledby="hero-rotulo">
+      <span class="valor" id="hero-total">—</span>
+      <span class="rotulo" id="hero-rotulo">
+        empresas no universo Lucro Real / Lucro Presumido
+      </span>
+    </section>
+
+    <section class="kpis" id="kpis" aria-label="Indicadores"></section>
+
+    <section class="graficos">
+      <div class="cartao grafico">
+        <h2>Municípios com mais leads</h2>
+        <p class="fonte">Barra escura = total; o número à direita traz quantos têm apontamento.</p>
+        <div class="barras" id="barras-municipio"></div>
+      </div>
+      <div class="cartao grafico">
+        <h2>Distribuição por regime provável</h2>
+        <p class="fonte">Inferido a partir de porte, capital social e CNAE — não é dado oficial.</p>
+        <div class="barras" id="barras-regime"></div>
+      </div>
+    </section>
+
+    <section class="filtros" aria-label="Filtros">
+      <input type="search" id="busca" placeholder="Razão social, nome fantasia ou CNPJ"
+             aria-label="Buscar">
+      <select id="municipio" aria-label="Município">
+        <option value="">Todos os municípios</option>
+      </select>
+      <select id="regime" aria-label="Regime">
+        <option value="">Todos os regimes</option>
+        <option value="real">Lucro Real</option>
+        <option value="presumido">Lucro Presumido</option>
+      </select>
+      <select id="ordenar" aria-label="Ordenar por">
+        <option value="score">Maior score</option>
+        <option value="divida">Maior dívida ativa (União)</option>
+        <option value="divida_mg">Maior dívida ativa (MG)</option>
+        <option value="capital">Maior capital social</option>
+        <option value="razao_social">Razão social (A-Z)</option>
+      </select>
+      <div class="alternador" role="group" aria-label="Apontamentos">
+        <button class="chip" type="button" data-filtro="com_divida" aria-pressed="false">
+          Dívida ativa (União)
+        </button>
+        <button class="chip" type="button" data-filtro="com_divida_mg" aria-pressed="false">
+          Dívida ativa (MG)
+        </button>
+        <button class="chip" type="button" data-filtro="irregular" aria-pressed="false">
+          Situação irregular
+        </button>
+        <button class="chip" type="button" data-filtro="com_sancao" aria-pressed="false">
+          Sanção
+        </button>
+        <button class="chip" type="button" data-filtro="ex_simples" aria-pressed="false">
+          Saiu do Simples
+        </button>
+      </div>
+    </section>
+
+    <div class="envoltorio-tabela">
+      <table>
+        <caption class="sr-only">Leads encontrados</caption>
+        <thead>
+          <tr>
+            <th scope="col">Empresa</th>
+            <th scope="col">Município</th>
+            <th scope="col">Regime provável</th>
+            <th scope="col">Apontamentos</th>
+            <th scope="col" class="num">Dívida ativa (União)</th>
+            <th scope="col">Score</th>
+          </tr>
+        </thead>
+        <tbody id="corpo-tabela">
+          <tr><td colspan="6" class="carregando">Carregando…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="paginacao">
+      <span class="contagem" id="contagem"></span>
+      <span>
+        <button type="button" id="anterior" disabled>‹ Anterior</button>
+        <button type="button" id="proximo" disabled>Próxima ›</button>
+      </span>
+    </div>
+
+    <p class="aviso">
+      <strong>Sobre as certidões:</strong> este robô usa apenas fontes abertas, que
+      não emitem CND/CDT. Uma inscrição ativa em dívida ativa da União impede a
+      certidão negativa federal, e uma inscrição em dívida ativa estadual (MG)
+      impede a CDT estadual — isso é consequência direta. Mas a ausência de
+      apontamento aqui <strong>não garante</strong> certidão negativa: pode haver
+      débito ainda não inscrito em dívida ativa, débito municipal, FGTS ou
+      trabalhista. Confirme na fonte oficial antes de qualquer abordagem comercial.
+      A dívida estadual cobre só as inscrições dos últimos 12 meses.
+    </p>
+  </div>
+
+  <dialog id="painel">
+    <div class="detalhe-cabecalho">
+      <div>
+        <h2 id="detalhe-razao" style="font-size:16px;margin:0 0 2px"></h2>
+        <span class="cnpj" id="detalhe-cnpj"></span>
+      </div>
+      <button class="fechar" type="button" id="fechar-painel" aria-label="Fechar">×</button>
+    </div>
+    <div class="detalhe-corpo" id="detalhe-corpo"></div>
+  </dialog>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

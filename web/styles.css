@@ -1,0 +1,294 @@
+/* Paleta e chrome vindos do design system de dataviz.
+   Sequential blue para magnitude; status palette para apontamentos.
+   Nenhuma paleta categórica em uso — identidade nunca depende de cor aqui. */
+
+:root {
+  color-scheme: light;
+
+  --surface-1: #fcfcfb;
+  --page: #f9f9f7;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #898781;
+  --grid: #e1e0d9;
+  --baseline: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.10);
+
+  /* Sequential blue (magnitude) */
+  --seq-100: #cde2fb;
+  --seq-250: #86b6ef;
+  --seq-450: #2a78d6;
+  --seq-550: #1c5cab;
+
+  /* Status — fixo, nunca tematizado. Sempre acompanhado de rótulo. */
+  --good: #0ca30c;
+  --warning: #fab219;
+  --serious: #ec835a;
+  --critical: #d03b3b;
+
+  --raio: 8px;
+  --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --surface-1: #1a1a19;
+    --page: #0d0d0d;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #898781;
+    --grid: #2c2c2a;
+    --baseline: #383835;
+    --border: rgba(255, 255, 255, 0.10);
+    --seq-100: #104281;
+    --seq-250: #184f95;
+    --seq-450: #3987e5;
+    --seq-550: #86b6ef;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface-1: #1a1a19;
+  --page: #0d0d0d;
+  --text-primary: #ffffff;
+  --text-secondary: #c3c2b7;
+  --text-muted: #898781;
+  --grid: #2c2c2a;
+  --baseline: #383835;
+  --border: rgba(255, 255, 255, 0.10);
+  --seq-100: #104281;
+  --seq-250: #184f95;
+  --seq-450: #3987e5;
+  --seq-550: #86b6ef;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  background: var(--page);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.envelope { max-width: 1400px; margin: 0 auto; padding: 24px 20px 64px; }
+
+/* --- Cabeçalho ---------------------------------------------------------- */
+
+header { display: flex; justify-content: space-between; align-items: flex-start;
+         gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+h1 { font-size: 20px; margin: 0 0 2px; letter-spacing: -0.01em; }
+.subtitulo { color: var(--text-secondary); font-size: 13px; margin: 0; }
+
+.tema {
+  background: var(--surface-1); color: var(--text-secondary);
+  border: 1px solid var(--border); border-radius: var(--raio);
+  padding: 7px 12px; cursor: pointer; font: inherit; font-size: 13px;
+}
+.tema:hover { color: var(--text-primary); }
+
+/* --- Hero + KPI --------------------------------------------------------- */
+
+.cartao {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--raio);
+  padding: 16px 18px;
+}
+
+.hero { margin-bottom: 12px; }
+.hero .valor {
+  font-size: 48px; font-weight: 650; line-height: 1.05;
+  letter-spacing: -0.02em; display: block;
+}
+.hero .rotulo { color: var(--text-secondary); font-size: 13px; }
+
+.kpis {
+  display: grid; gap: 12px; margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+.kpi .valor { font-size: 26px; font-weight: 620; letter-spacing: -0.015em;
+              display: block; }
+.kpi .rotulo { color: var(--text-secondary); font-size: 12px; display: block;
+               margin-top: 2px; }
+.kpi .nota { color: var(--text-muted); font-size: 11px; display: block;
+             margin-top: 6px; }
+
+/* Faixa de status no topo do tile — acompanha sempre o rótulo, nunca sozinha. */
+.kpi { border-top: 3px solid var(--baseline); }
+.kpi[data-status="critical"] { border-top-color: var(--critical); }
+.kpi[data-status="serious"]  { border-top-color: var(--serious); }
+.kpi[data-status="warning"]  { border-top-color: var(--warning); }
+.kpi[data-status="good"]     { border-top-color: var(--good); }
+.kpi[data-status="neutro"]   { border-top-color: var(--seq-450); }
+
+/* --- Gráficos de barra (magnitude → sequential, uma hue) ---------------- */
+
+.graficos { display: grid; gap: 12px; margin-bottom: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+.grafico h2 { font-size: 13px; font-weight: 620; margin: 0 0 2px; }
+.grafico .fonte { color: var(--text-muted); font-size: 11px; margin: 0 0 14px; }
+
+.barras { display: flex; flex-direction: column; gap: 2px; }
+.barra-linha {
+  display: grid; grid-template-columns: minmax(90px, 30%) 1fr auto;
+  align-items: center; gap: 10px; padding: 2px 0; cursor: default;
+}
+.barra-linha:hover .trilho { background: var(--grid); }
+.barra-rotulo {
+  color: var(--text-secondary); font-size: 12px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+/* display:block é obrigatório — são <span>, e altura/largura não se aplicam a
+   elementos inline: sem isto as barras somem. */
+.trilho { display: block; height: 14px; border-radius: 2px;
+          background: transparent; position: relative; }
+.preenchimento {
+  display: block; height: 14px; background: var(--seq-450);
+  /* Cantos arredondados só na ponta do dado; a base fica ancorada no eixo. */
+  border-radius: 0 4px 4px 0;
+  min-width: 2px; transition: width 140ms ease;
+}
+.barra-valor { font-size: 12px; font-variant-numeric: tabular-nums;
+               color: var(--text-secondary); min-width: 62px; text-align: right; }
+
+/* --- Filtros ------------------------------------------------------------ */
+
+.filtros {
+  display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+  background: var(--surface-1); border: 1px solid var(--border);
+  border-radius: var(--raio); padding: 12px 14px; margin-bottom: 12px;
+}
+.filtros input[type="search"], .filtros select {
+  font: inherit; font-size: 13px; padding: 7px 10px;
+  border: 1px solid var(--border); border-radius: 6px;
+  background: var(--page); color: var(--text-primary);
+}
+.filtros input[type="search"] { flex: 1 1 260px; min-width: 180px; }
+.alternador { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip {
+  font: inherit; font-size: 12px; padding: 6px 11px; cursor: pointer;
+  border: 1px solid var(--border); border-radius: 999px;
+  background: var(--page); color: var(--text-secondary);
+}
+.chip:hover { color: var(--text-primary); }
+.chip[aria-pressed="true"] {
+  background: var(--seq-450); border-color: var(--seq-450); color: #fff;
+}
+
+/* --- Tabela ------------------------------------------------------------- */
+
+.envoltorio-tabela {
+  background: var(--surface-1); border: 1px solid var(--border);
+  border-radius: var(--raio); overflow-x: auto;
+}
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th {
+  text-align: left; font-size: 11px; font-weight: 620; text-transform: uppercase;
+  letter-spacing: 0.04em; color: var(--text-muted);
+  padding: 11px 12px; border-bottom: 1px solid var(--baseline);
+  white-space: nowrap; position: sticky; top: 0; background: var(--surface-1);
+}
+tbody td { padding: 10px 12px; border-bottom: 1px solid var(--grid);
+           vertical-align: top; }
+tbody tr { cursor: pointer; }
+tbody tr:hover td { background: color-mix(in srgb, var(--seq-450) 6%, transparent); }
+.num { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.razao { font-weight: 560; }
+.secundario { color: var(--text-secondary); font-size: 12px; }
+.cnpj { font-variant-numeric: tabular-nums; white-space: nowrap;
+        color: var(--text-secondary); font-size: 12px; }
+
+/* Medidor de score: mesma hue do ramp sequential. */
+.score { display: flex; align-items: center; gap: 8px; }
+.score-trilho { display: block; width: 44px; height: 5px; border-radius: 999px;
+                background: var(--grid); overflow: hidden; flex: none; }
+.score-preenchimento { display: block; height: 5px; border-radius: 999px;
+                       background: var(--seq-450); }
+.score-num { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 22px; }
+
+/* Etiqueta de apontamento.
+   O texto usa token de ink, nunca a cor de status: warning (#fab219, 1.79:1) e
+   serious (#ec835a, 2.57:1) não alcançam 3:1 no fundo claro, e como texto de
+   11px ficam ilegíveis. A cor vive na borda e num fundo suave — o rótulo
+   textual sempre acompanha, então a cor nunca carrega o sentido sozinha. */
+.etiqueta {
+  display: inline-block; font-size: 11px; padding: 2px 7px; border-radius: 4px;
+  margin: 1px 3px 1px 0; white-space: nowrap;
+  border: 1px solid var(--baseline); background: transparent;
+  color: var(--text-primary);
+}
+.etiqueta[data-status="critical"] {
+  border-color: var(--critical);
+  background: color-mix(in srgb, var(--critical) 12%, transparent);
+}
+.etiqueta[data-status="serious"] {
+  border-color: var(--serious);
+  background: color-mix(in srgb, var(--serious) 14%, transparent);
+}
+.etiqueta[data-status="warning"] {
+  border-color: var(--warning);
+  background: color-mix(in srgb, var(--warning) 16%, transparent);
+}
+.etiqueta[data-status="good"] {
+  border-color: var(--good);
+  background: color-mix(in srgb, var(--good) 10%, transparent);
+}
+.etiqueta[data-status="neutro"] { color: var(--text-secondary); }
+
+/* --- Paginação ---------------------------------------------------------- */
+
+.paginacao { display: flex; align-items: center; justify-content: space-between;
+             gap: 12px; padding: 14px 2px; flex-wrap: wrap; }
+.paginacao button {
+  font: inherit; font-size: 13px; padding: 7px 13px; cursor: pointer;
+  background: var(--surface-1); color: var(--text-primary);
+  border: 1px solid var(--border); border-radius: 6px;
+}
+.paginacao button:disabled { opacity: 0.4; cursor: default; }
+.contagem { color: var(--text-secondary); font-size: 13px; }
+
+/* --- Painel de detalhe -------------------------------------------------- */
+
+dialog {
+  border: 1px solid var(--border); border-radius: 12px; padding: 0;
+  background: var(--surface-1); color: var(--text-primary);
+  max-width: 780px; width: calc(100% - 32px); max-height: 86vh;
+}
+dialog::backdrop { background: rgba(0, 0, 0, 0.5); }
+.detalhe-cabecalho {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+  padding: 18px 20px 14px; border-bottom: 1px solid var(--grid);
+  position: sticky; top: 0; background: var(--surface-1); border-radius: 12px 12px 0 0;
+}
+.detalhe-corpo { padding: 18px 20px 24px; overflow-y: auto; }
+.detalhe-corpo h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em;
+                    color: var(--text-muted); margin: 22px 0 8px; }
+.detalhe-corpo h3:first-child { margin-top: 0; }
+.campos { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+          gap: 12px 20px; }
+.campo .rotulo { color: var(--text-muted); font-size: 11px; display: block; }
+.campo .valor { font-size: 13px; }
+.fechar { font: inherit; font-size: 20px; line-height: 1; padding: 2px 8px;
+          background: none; border: none; color: var(--text-secondary);
+          cursor: pointer; border-radius: 6px; }
+.fechar:hover { color: var(--text-primary); background: var(--grid); }
+
+.aviso {
+  font-size: 12px; color: var(--text-secondary);
+  background: color-mix(in srgb, var(--warning) 10%, transparent);
+  border-left: 3px solid var(--warning);
+  padding: 10px 12px; border-radius: 0 6px 6px 0; margin: 14px 0 0;
+}
+
+.vazio { padding: 40px 20px; text-align: center; color: var(--text-secondary); }
+.carregando { padding: 40px 20px; text-align: center; color: var(--text-muted); }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}

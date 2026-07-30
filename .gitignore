@@ -1,0 +1,24 @@
+# Dados brutos e banco — nunca versionar (dezenas de GB)
+data/
+*.duckdb
+*.duckdb.wal
+*.zip
+*.csv
+*.xlsb
+*.xlsx
+
+# Exports gerados
+exports/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# Editor / OS
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini

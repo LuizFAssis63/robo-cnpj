@@ -1,0 +1,51 @@
+# Configuração do robô. Alterar aqui, não no código.
+
+uf: MG
+
+# Competência dos dados da PGFN (dívida ativa da União).
+# Publicação é trimestral: 2026_trimestre_01, 2026_trimestre_02, ...
+pgfn:
+  ano: 2026
+  trimestre: 2
+
+# Dívida ativa estadual de MG (SEF/AGE, resolução conjunta 5625/22). O arquivo
+# tem ~25 anos de inscrições; carregamos só as mais recentes.
+mg_divida:
+  janela_dias: 365
+
+receita:
+  base_url: https://dadosabertos.rfb.gov.br/CNPJ
+  # A Receita fatia Empresas/Estabelecimentos/Socios em 10 arquivos (0..9).
+  # Reduza para 1 ou 2 durante o desenvolvimento — a carga completa é ~50GB descompactados.
+  fatias: 10
+
+universo:
+  # Situações cadastrais mantidas no universo de leads.
+  # 02=Ativa 03=Suspensa 04=Inapta — suspensa e inapta interessam: são apontamento, não descarte.
+  situacoes_cadastrais: ["02", "03", "04"]
+
+  # Só entidades empresariais (natureza jurídica 2xxx). Exclui órgãos públicos (1xxx),
+  # entidades sem fins lucrativos (3xxx), pessoas físicas (4xxx) e org. internacionais (5xxx).
+  prefixo_natureza_juridica: "2"
+
+  # Apenas matriz. Filial não tem regime tributário próprio.
+  somente_matriz: true
+
+  # Empresa sem nenhum apontamento (dívida ativa, situação irregular, sanção,
+  # exclusão do Simples) não interessa à contabilidade — é só um CNPJ fora do
+  # Simples, sem gancho comercial. Desligue para ver o universo inteiro.
+  somente_com_apontamento: true
+
+# Pesos do score estratégico (0-100). Ajuste conforme o que a contabilidade valoriza.
+score:
+  peso_divida_ativa_uniao: 30
+  peso_divida_ativa_mg: 25
+  peso_situacao_irregular: 25
+  peso_sancao: 15
+  peso_saiu_do_simples: 20      # lead quente: precisa migrar de regime
+  peso_porte_demais: 10
+
+# Faixas de capital social (R$) usadas na inferência de regime.
+regime:
+  # Acima disso, Lucro Real é o cenário dominante.
+  capital_lucro_real: 1000000
