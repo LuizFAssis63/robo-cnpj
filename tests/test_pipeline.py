@@ -304,6 +304,15 @@ def main() -> int:
         except db.LayoutInesperadoError:
             conferir(True, "CSV com número errado de colunas é rejeitado")
 
+        print("\n8. Conversão de data serial (Excel → ISO)")
+        conferir(mg_divida._serial_para_iso(45658) == "2025-01-01",
+                 "serial Excel converte para ISO",
+                 f"obtido {mg_divida._serial_para_iso(45658)}")
+        conferir(mg_divida._serial_para_iso("não é número") is None,
+                 "valor não numérico retorna None em vez de lançar exceção")
+        conferir(mg_divida._serial_para_iso(None) is None,
+                 "None retorna None em vez de lançar exceção")
+
     finally:
         shutil.rmtree(trabalho, ignore_errors=True)
 
